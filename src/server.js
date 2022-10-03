@@ -71,13 +71,25 @@ server.get('/games', async (req, res) => {
 
     if (name) {
         const games = await connection.query(
-            `SELECT games.*,  categories.name AS "categoryName" FROM games JOIN categories ON games."categoryId"=categories.id WHERE games."name" ILIKE '${name}%';`
+            `
+                SELECT games.*,  categories.name AS "categoryName" 
+                FROM games 
+                JOIN categories 
+                ON games."categoryId"=categories.id 
+                WHERE games."name" 
+                ILIKE '${name}%';
+            `
         );
         return res.send(games.rows);
     }
 
     const games = await connection.query(
-        'SELECT games.*,  categories.name AS "categoryName" FROM games JOIN categories ON games."categoryId"=categories.id;'
+        `
+            SELECT games.*,  categories.name AS "categoryName" 
+            FROM games 
+            JOIN categories 
+            ON games."categoryId"=categories.id;
+        `
     );
 
     res.send(games.rows);
@@ -90,9 +102,9 @@ server.post('/games', async (req, res) => {
     const userSchema = joi.object ({
         name: joi.string().empty(' ').required(),
         image: joi.string().required(),
-        stockTotal: joi.number().integer().min(0).required(),
+        stockTotal: joi.number().integer().min(1).required(),
         categoryId: joi.number().integer().min(1).required(),
-        pricePerDay: joi.number().min(0).required(),
+        pricePerDay: joi.number().min(1).required(),
     });
 
     const validation = userSchema.validate(req.body, { abortEarly: false });
@@ -123,7 +135,10 @@ server.post('/games', async (req, res) => {
         }
         
         await connection.query(
-            'INSERT INTO games ("name", "image",  "stockTotal", "categoryId", "pricePerDay") VALUES ($1, $2, $3, $4, $5);', 
+            `
+                INSERT INTO games ("name", "image",  "stockTotal", "categoryId", "pricePerDay") 
+                VALUES ($1, $2, $3, $4, $5);
+            `, 
             [name, image,  stockTotal, categoryId, pricePerDay]
         );   
 
@@ -178,7 +193,7 @@ server.post('/customers', async (req, res) => {
         name: joi.string().empty(' ').required(),
         phone: joi.string().length(10).length(11).pattern(/^[0-9]+$/).required(),
         cpf: joi.string().length(11).pattern(/^[0-9]+$/).required(),
-        birthday: joi.date().iso().required()
+        birthday: joi.date().min('1922-01-01').max('2006-01-01').iso().required()
     });
 
     const validation = userSchema.validate(req.body, { abortEarly: false });
@@ -200,7 +215,10 @@ server.post('/customers', async (req, res) => {
         }
 
         await connection.query(
-            'INSERT INTO customers ("name", "phone", "cpf", "birthday") VALUES ($1, $2, $3, $4);', 
+            `
+                INSERT INTO customers ("name", "phone", "cpf", "birthday") 
+                VALUES ($1, $2, $3, $4);
+            `, 
             [name, phone, cpf, birthday]
         );
     
@@ -221,7 +239,7 @@ server.put('/customers/:id' , async (req, res) => {
         name: joi.string().empty(' '),
         phone: joi.string().length(10).length(11).pattern(/^[0-9]+$/),
         cpf: joi.string().length(11).pattern(/^[0-9]+$/),
-        birthday: joi.date().iso()
+        birthday: joi.date().min('1922-01-01').max('2006-01-01').iso()
     });
 
     const validation = userSchema.validate(req.body, { abortEarly: false });
