@@ -1,5 +1,29 @@
 {
   "dependencies": {
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "joi": "^17.6.2",
     "pg": "^8.8.0"
-  }
+  },
+  "name": "projeto15-boardcamp",
+  "description": "",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naylima/boardcamp-api-sql.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/naylima/boardcamp-api-sql/issues"
+  },
+  "homepage": "https://github.com/naylima/boardcamp-api-sql#readme"
 }
